@@ -5,6 +5,7 @@ const PORT = 8080; //default port
 app.set('view engine','ejs');
 
 const bodyParser = require("body-parser");//bodyParser is deprecated
+const cookieParser = require('cookie-parser');
 app.use(express.urlencoded({extended: true}));
 
 function generateRandomString() {
@@ -25,15 +26,19 @@ app.get('/',(req,res) => {
   res.send('Hello');
 })
 
+app.use(cookieParser())
+
 //To add all urls from urlDatabase
 app.get('/urls', (req,res) => {
-  const templateVars = { urls : urlDatabase };
+  // console.log(req.cookies)
+  const templateVars = {username: req.cookies.username, urls : urlDatabase};
   // console.log(templateVars)
   res.render('urls_index', templateVars);
 })
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const username = req.cookies.username 
+  res.render("urls_new", { username });
 });
 
 // to convert the url to shortURL and redirect to show page
@@ -51,7 +56,7 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
+  const templateVars = { username: req.cookies.username, shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
@@ -76,21 +81,26 @@ app.post('/urls/:shortURL/update', (req, res) => {
   const shortURL = req.params.shortURL; 
   // console.log("req.body.longURL:",req.body.longURL)
   const updatedLongURL = req.body.longURL; 
-
   urlDatabase[shortURL] = updatedLongURL; //longURL in the database now equals the updated URL - urlDatabase[shortURL] equals what the value of the property shortURL 
   res.redirect('/urls'); //redirect to urls page
 }); 
 
+//handling login and saving cookie
+app.post('/login',(req,res) => {
+res.cookie('username',req.body.username)
+res.redirect('/urls');
+})
+
+//handling login and saving cookie
+app.post('/logout',(req,res) => {
+  res.clearCookie('username',req.body.username)
+  res.redirect('/urls');
+  })
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-// app.get("/hello", (req, res) => {
-//   res.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
-// Always pass object to EJS template even if one variable
 app.get("/hello", (req, res) => {
   const templateVars = { greeting: 'Hello World!' };
   res.render("hello", templateVars); // need hello_word ejs template

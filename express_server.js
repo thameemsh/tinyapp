@@ -20,12 +20,9 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-//To Delete a URL
-app.post("/urls/:shortURL/delete",(req,res) => {
-  // console.log(req.params.shortURL);
-  const shortURLToDel = req.params.shortURL;
-  delete urlDatabase[shortURLToDel]
-res.redirect('/urls');
+
+app.get('/',(req,res) => {
+  res.send('Hello');
 })
 
 //To add all urls from urlDatabase
@@ -41,26 +38,49 @@ app.get("/urls/new", (req, res) => {
 
 // to convert the url to shortURL and redirect to show page
 app.post("/urls", (req, res) => {
-  console.log(req.body);  // Log the POST request body to the console
+  // console.log(req.body);  // Log the POST request body to the console
   const shortformURL = generateRandomString()
   urlDatabase[shortformURL] = req.body.longURL; 
   res.redirect(`/urls/${shortformURL}`); // Respond with redirect to /urls/:shortURL
 });
-
 
 app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
 
+
 app.get("/urls/:shortURL", (req, res) => {
   const templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL] };
   res.render("urls_show", templateVars);
 });
 
-app.get('/',(req,res) => {
-  res.send('Hello');
+//To Delete a URL
+app.post("/urls/:shortURL/delete",(req,res) => {
+  // console.log(req.params.shortURL);
+  const shortURLToDel = req.params.shortURL;
+  delete urlDatabase[shortURLToDel]
+res.redirect('/urls');
 })
+
+
+//To Edit the longurl by clicking edit button
+app.post("/urls/:shortURL",(req,res) => {
+  const shortURLToEdit = req.params.shortURL;
+res.redirect(`/urls/${shortURLToEdit}`);
+})
+
+//Get a update request from url-show page to update existing longUrl in the index page
+app.post('/urls/:shortURL/update', (req, res) => {
+  // console.log("req.params.shortURL:",req.params.shortURL)
+  const shortURL = req.params.shortURL; 
+  // console.log("req.body.longURL:",req.body.longURL)
+  const updatedLongURL = req.body.longURL; 
+
+  urlDatabase[shortURL] = updatedLongURL; //longURL in the database now equals the updated URL - urlDatabase[shortURL] equals what the value of the property shortURL 
+  res.redirect('/urls'); //redirect to urls page
+}); 
+
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);

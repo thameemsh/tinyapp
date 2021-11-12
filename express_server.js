@@ -156,16 +156,16 @@ app.post('/urls/:shortURL/update', (req, res) => {
 //handling login  and saving cookie
 app.post('/login', (req, res) => {
 
-  if (!req.body.email || !req.body.password) {
+  const user_id = getUserByEmail(req.body.email, users) 
+
+  if (!req.body.email || !req.body.password || !user_id) {
     return res.status(400).send("Invalid Email or Password. <a href= '/register'> Return to Login Page <a>")
   }
-
-  const user_id = getUserByEmail(req.body.email, users) 
 
   console.log('dbpassword:',users[user_id].password);
   console.log("userpassword:",req.body.password)
 
-    if (!user_id || !bcrypt.compareSync(req.body.password, users[user_id].password)) {         
+    if (!bcrypt.compareSync(req.body.password, users[user_id].password)) {         
     return res.status(400).send("Invalid credentials. <a href= '/login'> Return to Login Page <a>")
   } else {
     req.session.user_id = user_id;

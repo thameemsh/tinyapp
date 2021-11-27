@@ -11,18 +11,12 @@
         <% if(user) { %>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         <% } else { %>
-          <a class="nav-item nav-link" href="/register">Create New URL</a>
+          <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
           
         <% } %>
       </div>
     </div>
 
-    <!-- <form class="form-inline" action="/login" method="POST" >
-      <div style="justify-content: flex-end;">
-         <input type="text" name="username" placeholder="Username" style="border-radius: 0.3em;">
-        <button type="submit" style=" color:black; border: 0.1em solid black; border-radius: 0.3em;">Login</button>
-      </div>
-    </form> -->
     <% if(!user) { %>
     
       <a href="/register">
@@ -35,10 +29,6 @@
           style=" color:black; border: 0.1em solid black; height: fit-content;">Login</button>
       </a>
     
-      <!-- <form class="d-flex" action="/login" method="POST" >
-          <input type="text" class="form-control mb-2 mr-sm-2" name="username" placeholder="Username">
-          <button type="submit" class="btn btn-success" style=" color:black; border: 0.1em solid black; height: fit-content;" >Login</button>
-        </form>  -->
       <% } else { %>
 
         <form class="d-flex" action="/logout" method="POST">

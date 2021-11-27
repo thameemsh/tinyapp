@@ -36,10 +36,10 @@
                 <%= urls[url].longURL%>
               </td>
               <td>
-                <form method="POST" action="/urls/<%= url %>">
-                  <input type="submit" value="Edit" name="shortURL"
-                    style=" color:blue; background-color: white; border: 0.1em solid blue; border-radius: 0.3em;">
-                </form>
+                <!-- <form method="POST" action="/urls/<%= url %>"> -->
+                  <a href="/urls/<%= url %>"
+                    style=" color:blue; background-color: white; padding: 0.25em; border: 0.1em solid blue; border-radius: 0.3em;">Edit</a>
+                <!-- </form> -->
               </td>
               <td>
                 <form method="POST" action="/urls/<%= url %>/delete">
